@@ -1,0 +1,64 @@
+
+views:
+
+post_tag(*) 	-- alle tags und ihre zugehörigen posts		-- dorian
+post_comment(*) -- alle comments deren posts zuordnen 		-- taha
+user_post(*) 	-- alle posts eines users 			-- florian
+board_post(*)	-- alle posts eines boards			-- alexander
+user_session(*) -- alle sessions eines users			-- emin
+
+
+
+
+trigger:
+
+update rank on post 					-- taha
+notify user on subscribed board post  			-- alexander
+notify user on comment on post				-- florian
+check post likes on like (hot?), notify on hot		-- emin
+on create session increase login streak			-- dorian
+
+
+
+
+procedures / functions:
+
+deleteNotificationsByUserId(userId)
+getBoardsByCategory(boardCategory)
+getPostsByTag(tagID)
+getCommentsByPost(postID)
+terminateSessionByUserId(userID)
+
+
+
+
+
+
+
+indizes:
+
+tbd
+
+
+
+----------------------------------------------
+getTags()
+
+getPosts()
+
+getPostsByUser(userID)
+
+getCommentsByUser(userID)
+
+getUserByUsername()
+getNotificationsByUsername()
+getUserLoginData(username)
+createSession(username)
+
+
+
+
+
+
+
+
