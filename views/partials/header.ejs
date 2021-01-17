@@ -1,0 +1,14 @@
+<div> <i id="burger" class="fas fa-hamburger"></i></div>
+<div> <a href="/"><img id="header_logo" src="logo.png" alt=""></a></div>
+
+
+<div id="menu">
+    <div id="closebtn"> &times; </div>
+    <ul>
+        <% data.menu.forEach((menuItem)=> { %>
+            <li> <a href="<%=menuItem.href %>">
+                    <%=menuItem.name %>
+                </a> </li>
+            <% }); %>
+    </ul>
+</div>
