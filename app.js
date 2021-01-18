@@ -3,6 +3,7 @@ const app = express();
 const port = 8080;
 const path = require("path");
 const fileUpload = require("express-fileupload");
+const { v4: uuidv4 } = require("uuid");
 
 app.set("view engine", "ejs");
 app.set("views", "./views");
@@ -22,7 +23,7 @@ app.use(
 	})
 );
 
-let loggedIn = false;
+let loggedIn = true;
 
 app.get("/", (req, res) =>
 	!loggedIn
@@ -56,6 +57,10 @@ app.post("/register", (req, res) => {
 
 app.post("/upload", (req, res) => {
 	console.log(req.files);
+	console.log(req.body);
+
+	const newPath = path.join(__dirname, "public", "images", uuidv4() + ".png");
+	req.files.post_picture.mv(newPath, (err) => console.log(err));
 	res.redirect("/");
 });
 
@@ -69,7 +74,7 @@ const menuLoggedIn = [
 const menuNotLoggedIn = [
 	{ name: "homepage", href: "/" },
 	{ name: "login", href: "/login" },
-	{ name: "register", href: "register" },
+	{ name: "register", href: "/register" },
 ];
 
 const menu = loggedIn ? menuLoggedIn : menuNotLoggedIn;

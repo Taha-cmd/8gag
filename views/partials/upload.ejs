@@ -1,9 +1,23 @@
 <br><br>
 <hr>
-<h1 class="text-center"> upload zone <i class="fas fa-upload"></i></h1>
+<h3 class="text-center"> add a new post <i class="fas fa-upload"></i></h3>
 <hr>
 <br><br>
 
-<form action="/upload" class="dropzone" id="my-awesome-dropzone">
-
+<form action="/upload" method="post" encType="multipart/form-data">
+    <div class="form-group col-10 offset-1">
+        <label for="post_content">Post content: </label>
+        <textarea class="form-control" id="post_content" name="post_content" rows="3"></textarea>
+    </div>
+    <div class="form-group col-4 offset-1">
+        <label for="post_tag">Post tag: </label>
+        <input class="form-control" type="text" id="post_tag" name="post_tag"></input>
+    </div>
+    <div class="form-group col-10 offset-1">
+        <label for="post_picture">Upload a picture: </label>
+        <input type="file" class="" id="post_picture" name="post_picture" />
+    </div>
+    <div class="form-group col-10 offset-1">
+        <button class="btn btn-dark" type="submit">Post</button>
+    </div>
 </form>
