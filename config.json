@@ -1,0 +1,7 @@
+{
+    "database": {
+        "user" : "w20bif3_if19b006",
+        "password" : "fuckoracle",
+        "connectString" : "infdb.technikum-wien.at:1521/o10"
+    }
+}
