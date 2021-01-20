@@ -1,0 +1,12 @@
+insert into "rank"("level", "title") values(1, 'private');
+insert into "rank"("level", "title") values(2, 'private first class');
+insert into "rank"("level", "title") values(3, 'specialist');
+insert into "rank"("level", "title") values(4, 'corporal');
+insert into "rank"("level", "title") values(5, 'sergeant');
+insert into "rank"("level", "title") values(6, 'staff sergeant');
+insert into "rank"("level", "title") values(7, 'sergeant first class');
+insert into "rank"("level", "title") values(8, 'master sergeant');
+insert into "rank"("level", "title") values(9, 'first sergeant');
+insert into "rank"("level", "title") values(10, 'sergeant major');
+insert into "rank"("level", "title") values(11, 'command sergeant major');
+insert into "rank"("level", "title") values(12, 'sergeant major of the army');
