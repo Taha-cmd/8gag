@@ -412,6 +412,85 @@ app.post("/unSub", async function (req, res) {
 	}
 });
 
+app.get("/notifications", async function (req, res) {
+	let connection;
+	var mypw = "dbsw20";
+	var pwd = null;
+	
+	try{
+		connection = await oracledb.getConnection( {
+			user          : "w20bif3_if20b185",
+			password      : mypw,
+			connectString : "infdb.technikum-wien.at:1521/o10"
+		});
+
+		await connection.execute("select * from \"notification\" where \"user_id\" = :id", [sess.uid], function(err, result){
+			if (err) {
+				console.log('Result: ', err);
+				res.sendStatus(400);
+				connection.close();
+			} else {
+				console.log('Result: ', result);
+				if(loggedIn)
+					res.render("notifications", { data: { loggedIn: true, menu: menuLoggedIn, uid: sess.uid, notifications: result}})
+				connection.close();
+			}
+		});
+		
+	} catch(err){
+		console.error(err);
+	} finally {
+		if (connection) {
+			try {
+				//await connection.close();
+			} catch (err) {
+				console.error(err);
+			}
+		}
+	}	
+});
+
+app.post("/delNote", async function (req, res) {
+	console.log("Body: ", req.body);
+
+	let connection;
+	var mypw = "dbsw20";
+	
+	try{
+		connection = await oracledb.getConnection( {
+			user          : "w20bif3_if20b185",
+			password      : mypw,
+			connectString : "infdb.technikum-wien.at:1521/o10"
+		});
+	
+		var st = "delete from \"notification\" where \"user_id\" = " + sess.uid;
+		
+		await connection.execute(st,
+								[], {autoCommit: true}, 
+								function(err, result){
+			if (err) {
+				console.log('Result: ', err);
+				res.sendStatus(400);
+				connection.close();
+			} else {
+				res.redirect('http://127.0.0.1:8080/notifications');
+				connection.close();
+			}
+		});
+		
+	} catch(err){
+		console.error(err);
+	} finally {
+		if (connection) {
+			try {
+				//await connection.close();
+			} catch (err) {
+				console.error(err);
+			}
+		}
+	}
+});
+
 app.listen(port, () => console.log(`Example app listening on port ${port}`));
 
 const menuLoggedIn = [
@@ -419,6 +498,7 @@ const menuLoggedIn = [
 	{ name: "profile", href: "/profile" },
 	{ name: "browse", href: "/browse" },
 	{ name: "boards", href: "/boards" },
+	{ name: "notifications", href: "/notifications" },
 ];
 
 const menuNotLoggedIn = [

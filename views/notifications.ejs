@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <%- include('partials/head'); %>
+        <link rel="stylesheet" href="dropzone/dist/dropzone.css">
+        <title>8gag</title>
+</head>
+
+<body>
+    <header>
+        <%- include('partials/header'); %>
+    </header>
+
+    <main>
+        <div class="profile">
+            <%= data.username %>
+                <img class="profile_pic" src="<%=data.profile_pic %>" alt="">
+        </div>
+		
+		<div class="center">
+			<h1> Your Notifications </h1>
+		</div>
+		
+		<div class="centerLeft">
+		<% for(var i = 0; i < data.notifications.rows.length; i++) {%>
+			<h6><li><%= data.notifications.rows[i]["message"] %></li></h6>
+			<p><%= data.notifications.rows[i]["notification_date"] %></p>
+		<% } %>
+		</div>
+		
+		<form action="/delNote" method="post" class="center">
+			<input type="submit" name="DeleteNote" value="Delete Notifications" />
+		</form>
+		
+    </main>
+
+    <footer>
+        <%- include('partials/footer'); %>
+    </footer>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.slim.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.1/umd/popper.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.5.3/js/bootstrap.min.js"></script>
+    <script type="module" src="javascript/main.js"></script>
+    <script src="dropzone/dist/dropzone.js"></script>
+</body>
+
+</html>
