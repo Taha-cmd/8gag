@@ -1,4 +1,4 @@
-create or replace TRIGGER "post_hot_likes"
+create or replace TRIGGER "tr_br_post_hot_likes"
 BEFORE insert ON  "post_likes"
 for each row
 declare
