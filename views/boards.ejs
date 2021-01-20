@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <%- include('partials/head'); %>
+        <link rel="stylesheet" href="dropzone/dist/dropzone.css">
+        <title>8gag</title>
+</head>
+
+<body>
+    <header>
+        <%- include('partials/header'); %>
+    </header>
+
+    <main>
+        <div class="profile">
+            <%= data.username %>
+                <img class="profile_pic" src="<%=data.profile_pic %>" alt="">
+        </div>
+		
+		<div class="center">
+			<h1> Boards </h1>
+		</div>
+		
+		<% console.log("Subscriptions: ", data.subs); %>
+		
+		<div class="centerLeft">
+		<% for(var i = 0; i < data.boards.rows.length; i++) {%>
+			<a href="board?board=<%=data.boards.rows[i]["id"]%>&boardName=<%=data.boards.rows[i]["name"]%>"><h2><li><%= data.boards.rows[i]["name"] %></li></h2></a>
+			<%if (data.loggedIn) {%>
+				<%if (!data.subs.includes(data.boards.rows[i]["id"])) {%>
+					<form action="/sub" method="post" class="right">
+						<input class="form-control" type="hidden" id="board_id" name="board_id" value="<%=data.boards.rows[i]["id"]%>"></input>
+						<input type="submit" name="sub" value="Subscribe" />
+					</form>
+				<%} else {%>
+					<form action="/unSub" method="post" class="right">
+						<input class="form-control" type="hidden" id="board_id" name="board_id" value="<%=data.boards.rows[i]["id"]%>"></input>
+						<input type="submit" name="unSub" value="Unsubscribe" />
+					</form>
+				<%}%>
+			<%}%>
+		<% } %>
+		</div>
+    </main>
+
+    <footer>
+        <%- include('partials/footer'); %>
+    </footer>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.slim.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.1/umd/popper.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.5.3/js/bootstrap.min.js"></script>
+    <script type="module" src="javascript/main.js"></script>
+    <script src="dropzone/dist/dropzone.js"></script>
+</body>
+
+</html>

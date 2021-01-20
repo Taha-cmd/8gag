@@ -77,7 +77,24 @@
 }
 
 .center {
-	margin: auto;
+  text-align: center;
+}
+
+.centerLeft {
+  margin: auto;
+  width: 40%;
+}
+
+.left {
+  text-align: left;
+}
+
+.right {
+  text-align: right;
+}
+
+span {
+  display: inline-block;
 }
 
 #logo {
