@@ -1,1 +1,49 @@
 <h1 class="text-center">gallery <i class="fas fa-images"></i></h1>
+
+
+<br><br><br><br>
+<style>
+    .post {
+        padding: 3rem;
+        margin: 1rem;
+        width: 100%;
+    }
+
+    .post_content {
+        padding: 1rem;
+        border: 1px;
+    }
+
+    .post_image {
+        width: 100%;
+        max-width: 600px;
+        height: auto;
+        margin-bottom: 0.5rem;
+    }
+
+</style>
+
+<% data.posts.forEach(function(post) { %>
+    <hr>
+    <div class="post text-center">
+        <h3>
+            title: <%= post.title %>
+        </h3>
+        <h6>
+            by: <%= post.username %>
+        </h6>
+        <h5>
+            tag: <%= post.tag %>
+        </h5>
+
+        <div>
+            <img class="post_image" src="<%= post.image %> " alt="">
+        </div>
+        <div class="post_contnet">
+            content: <br>
+            <%= post.content %>
+        </div>
+
+    </div>
+    <hr>
+    <% }) %>
