@@ -78,11 +78,13 @@ app.get("/boards", async function (req, res) {
 	var pwd = null;
 	
 	try{
-		connection = await oracledb.getConnection( {
+		await oracledb.getConnection({
 			user          : "w20bif3_if20b185",
 			password      : mypw,
 			connectString : "infdb.technikum-wien.at:1521/o10"
-		});
+		}, async function(err, connection){
+		
+		console.log('Con: ', connection);
 
 		await connection.execute("select * from \"board\"", [], function(err, result){
 			if (err) {
@@ -90,12 +92,14 @@ app.get("/boards", async function (req, res) {
 				res.sendStatus(400);
 				connection.close();
 			} else {
+				console.log('Result: ', result);
 				if(loggedIn)
 					res.render("boards", { data: { loggedIn: true, menu: menuLoggedIn, uid: sess.uid, boards: result, username: sess.username, subs: sess.subs} })
 				else
 					res.render("boards", { data: { loggedIn: false, menu: menuNotLoggedIn, boards: result} })
 				connection.close();
 			}
+		});
 		});
 		
 	} catch(err){
@@ -135,6 +139,7 @@ app.get("/board", async function (req, res) {
 				res.sendStatus(400);
 				connection.close();
 			} else {
+				console.log('Result: ', result);
 				if(loggedIn)
 					res.render("board", { data: { loggedIn: true, menu: menuLoggedIn, uid: sess.uid, board: result, boardName: queryObject["boardName"], boardID: queryObject["board"], username: sess.username} })
 				else
@@ -177,10 +182,8 @@ app.get("/", async (req, res) => {
 			left join "image" on "image"."id" = "post_image"."image_id"`,
 			(err, result) => {
 				if (err) {
-					console.log("Result: ", err);
 					connection.close();
 				} else {
-					console.log(result);
 					result.rows.forEach((row) => {
 						posts.push({
 							id: row["id"],
@@ -254,24 +257,26 @@ app.post('/login', async function (req, res) {
 				res.sendStatus(400);
 				connection.close();
 			} else {
-				pwd = result.rows[0]["password_hash"];
-		
-				password(req.body.password).verifyAgainst(pwd, async function(error, verified) {
-					if(error)
-						console.log(error);
-					if(!verified) {
-						res.sendStatus(401);
-					} else {
-						res_user = result; 
+				if(result.rows.length > 0){				
+					pwd = result.rows[0]["password_hash"];
+			
+					password(req.body.password).verifyAgainst(pwd, async function(error, verified) {
+						if(error)
+							console.log(error);
+						if(!verified) {
+							res.sendStatus(401);
+						} else {
+							res_user = result; 
+							
+							sess = req.session;
+							sess.uid = res_user.rows[0]["id"];
+							sess.username = req.body.username;
+							loggedIn = true;
+						}
 						
-						sess = req.session;
-						sess.uid = res_user.rows[0]["id"];
-						sess.username = req.body.username;
-						loggedIn = true;
-					}
-					
-					connection.close();
-				});
+						connection.close();
+					});
+				}
 			}
 		});
 		
@@ -606,10 +611,12 @@ app.post("/delNote", async function (req, res) {
 			connectString : "infdb.technikum-wien.at:1521/o10"
 		});
 	
-		var st = "exec deleteNotificationByUserID(" + sess.uid + ")";
+		var st = `begin deleteNotificationByUserID(:usid); end;`;
+		
+		console.log("Exec: ", st);
 		
 		await connection.execute(st,
-								[], {autoCommit: true}, 
+								[sess.uid], {autoCommit: true}, 
 								function(err, result){
 			if (err) {
 				console.log('Result: ', err);
@@ -637,27 +644,28 @@ app.post("/delNote", async function (req, res) {
 app.get("/likes/:id", async (req, res) => {
 	res.header("Access-Control-Allow-Origin", "*");
 	try {
-		connection = await oracledb.getConnection({
+		await oracledb.getConnection({
 			user: config.database.user,
 			password: config.database.password,
 			connectString: config.database.connectString,
-		});
+		}, async function(err, connection){
 
-		await connection.execute(
-			`select count(*) as "likes" from "post_likes" where "post_id" = :id`,
-			[req.params.id],
-			{ autoCommit: true },
-			(err, result) => {
-				if (err) {
-					console.log("Result: ", err);
-					connection.close();
-					return res.sendStatus(400);
-				} else {
-					connection.close();
-					res.json({ success: true, likes: result.rows[0]["likes"] });
+			await connection.execute(
+				`select count(*) as "likes" from "post_likes" where "post_id" = :id`,
+				[req.params.id],
+				{ autoCommit: true },
+				(err, result) => {
+					if (err) {
+						console.log("Result: ", err);
+						connection.close();
+						return res.sendStatus(400);
+					} else {
+						connection.close();
+						res.json({ success: true, likes: result.rows[0]["likes"] });
+					}
 				}
-			}
-		);
+			);
+		});
 	} catch (err) {
 		console.error(err);
 	} finally {
@@ -673,28 +681,29 @@ app.get("/likes/:id", async (req, res) => {
 
 app.post("/likes/:id", async (req, res) => {
 	try {
-		connection = await oracledb.getConnection({
+		await oracledb.getConnection({
 			user: config.database.user,
 			password: config.database.password,
 			connectString: config.database.connectString,
-		});
+		}, async function(err, connection){
 
-		await connection.execute(
-			`insert into "post_likes"("user_id", "post_id")
-			values((select "id" from "user" where "username" = :username), :id)`,
-			[sess.username, req.params.id],
-			{ autoCommit: true },
-			(err, result) => {
-				if (err) {
-					console.log("Result: ", err);
-					connection.close();
-					return res.sendStatus(400);
-				} else {
-					connection.close();
-					return res.json({ success: true });
+			await connection.execute(
+				`insert into "post_likes"("user_id", "post_id")
+				values((select "id" from "user" where "username" = :username), :id)`,
+				[sess.username, req.params.id],
+				{ autoCommit: true },
+				(err, result) => {
+					if (err) {
+						console.log("Result: ", err);
+						connection.close();
+						return res.sendStatus(400);
+					} else {
+						connection.close();
+						return res.json({ success: true });
+					}
 				}
-			}
-		);
+			);
+		});
 	} catch (err) {
 		console.error(err);
 	} finally {

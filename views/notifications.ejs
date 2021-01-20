@@ -23,9 +23,11 @@
 		</div>
 		
 		<div class="centerLeft">
-		<% for(var i = 0; i < data.notifications.rows.length; i++) {%>
-			<h6><li><%= data.notifications.rows[i]["message"] %></li></h6>
-			<p><%= data.notifications.rows[i]["notification_date"] %></p>
+		<% if(data.notifications.rows.length > 0) {%>
+			<% for(var i = 0; i < data.notifications.rows.length; i++) {%>
+				<h6><li><%= data.notifications.rows[i]["message"] %></li></h6>
+				<p><%= data.notifications.rows[i]["notification_date"] %></p>
+			<% } %>
 		<% } %>
 		</div>
 		
