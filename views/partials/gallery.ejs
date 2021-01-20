@@ -21,6 +21,17 @@
         margin-bottom: 0.5rem;
     }
 
+    .like-icon {
+        margin-top: 0.5rem;
+        font-size: 2rem;
+        transition: 0.2s;
+        cursor: pointer;
+    }
+
+    .like-icon:hover {
+        transform: scale(1.2);
+    }
+
 </style>
 
 <% data.posts.forEach(function(post) { %>
@@ -43,7 +54,40 @@
             content: <br>
             <%= post.content %>
         </div>
+        <div class="">
+            <i post_id="<%=post.id%>" class="like-icon far fa-thumbs-up m-r-3"></i> <span class="likes_count"
+                id="<%= post.id %>"> </span>
+        </div>
 
     </div>
     <hr>
     <% }) %>
+
+        <script>
+            const likeIcons = Array.from(document.querySelectorAll(".like-icon"));
+            const likeCounters = Array.from(document.querySelectorAll(".likes_count"));
+            likeIcons.forEach(icon => {
+                icon.addEventListener("click", async (e) => {
+                    const response = await fetch(`/likes/${e.target.attributes.post_id.value}`, {
+                        method: 'POST'
+                    });
+                    const data = await response.json();
+
+                    if (data["success"]) {
+                        const id = e.target.attributes.post_id.value;
+                        const counter = document.getElementById(id);
+                        const currentCount = parseInt(counter.innerText);
+                        counter.innerHTML = currentCount + 1;
+                    }
+                });
+            });
+
+            likeCounters.forEach(async (counter) => {
+                const response = await fetch(`/likes/${counter.id}`);
+                const data = await response.json();
+                console.log(data);
+                if (data["success"]) {
+                    counter.innerHTML = data["likes"];
+                }
+            });
+        </script>

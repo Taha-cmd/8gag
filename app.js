@@ -78,6 +78,7 @@ app.get("/", async (req, res) => {
 							username: row["username"],
 							tag: row["name"],
 							image: row["path"] === null ? null : join("images", row["path"]),
+							id: row["id"],
 						});
 					});
 					!loggedIn
@@ -110,7 +111,7 @@ app.get("/", async (req, res) => {
 
 app.get("/browse", (req, res) => {
 	const menu = loggedIn ? menuLoggedIn : menuNotLoggedIn;
-	res.render("homepage", { data: { loggedIn: false, menu: menuNotLoggedIn } });
+	res.render("homepage", { data: { loggedIn: false, menu: menu } });
 });
 
 app.get("/login", (req, res) => {
@@ -306,6 +307,80 @@ app.post("/upload", async (req, res) => {
 	}
 
 	//res.redirect("/");
+});
+
+app.get("/likes/:id", async (req, res) => {
+	res.header("Access-Control-Allow-Origin", "*");
+	try {
+		connection = await oracledb.getConnection({
+			user: config.database.user,
+			password: config.database.password,
+			connectString: config.database.connectString,
+		});
+
+		await connection.execute(
+			`select count(*) as "likes" from "post_likes" where "post_id" = :id`,
+			[req.params.id],
+			{ autoCommit: true },
+			(err, result) => {
+				if (err) {
+					console.log("Result: ", err);
+					connection.close();
+					return res.sendStatus(400);
+				} else {
+					connection.close();
+					res.json({ success: true, likes: result.rows[0]["likes"] });
+				}
+			}
+		);
+	} catch (err) {
+		console.error(err);
+	} finally {
+		if (connection) {
+			try {
+				//await connection.close();
+			} catch (err) {
+				console.error(err);
+			}
+		}
+	}
+});
+
+app.post("/likes/:id", async (req, res) => {
+	try {
+		connection = await oracledb.getConnection({
+			user: config.database.user,
+			password: config.database.password,
+			connectString: config.database.connectString,
+		});
+
+		await connection.execute(
+			`insert into "post_likes"("user_id", "post_id") 
+			values((select "id" from "user" where "username" = :username), :id)`,
+			[sess.username, req.params.id],
+			{ autoCommit: true },
+			(err, result) => {
+				if (err) {
+					console.log("Result: ", err);
+					connection.close();
+					return res.sendStatus(400);
+				} else {
+					connection.close();
+					return res.json({ success: true });
+				}
+			}
+		);
+	} catch (err) {
+		console.error(err);
+	} finally {
+		if (connection) {
+			try {
+				//await connection.close();
+			} catch (err) {
+				console.error(err);
+			}
+		}
+	}
 });
 
 app.listen(port, () => console.log(`8gag listening on port ${port}`));
