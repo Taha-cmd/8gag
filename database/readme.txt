@@ -4,3 +4,4 @@ to create the database, execute the following scripts in the given order:
 2) createSequences.sql
 3) createAutoIncrementTriggers.sql
 4) insertRanks.sql
+5) createTriggers.sql

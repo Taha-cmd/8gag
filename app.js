@@ -74,14 +74,12 @@ app.get("/browse", (req, res) =>
 
 app.get("/boards", async function (req, res) {
 	let connection;
-	var mypw = "dbsw20";
-	var pwd = null;
 
 	try {
 		connection = await oracledb.getConnection({
-			user: "w20bif3_if20b185",
-			password: mypw,
-			connectString: "infdb.technikum-wien.at:1521/o10",
+			user: config.database.user,
+			password: config.database.password,
+			connectString: config.database.connectString,
 		});
 
 		await connection.execute(
@@ -581,9 +579,9 @@ app.post("/sub", async function (req, res) {
 
 app.post("/unSub", async function (req, res) {
 	console.log("Body: ", req.body);
+	console.log(sess);
 
 	let connection;
-	var mypw = "dbsw20";
 
 	try {
 		connection = await oracledb.getConnection({
@@ -592,15 +590,12 @@ app.post("/unSub", async function (req, res) {
 			connectString: config.database.connectString,
 		});
 
-		var st =
-			'delete from "subscription" where "user_id" = ' +
-			sess.uid +
-			' and "board_id" = ' +
-			req.body.board_id;
+		//var st = `delete from "subscription" where "user_id" = ${sess.uid} and "board_id" = ${req.body.board_id}`;
+		var st = "delete from \"subscription\" where \"user_id\" = " + sess.uid + " and \"board_id\" = " + req.body.board_id;
 
 		await connection.execute(
 			st,
-			[],
+			[sess.uid, req.body.board_id],
 			{ autoCommit: true },
 			function (err, result) {
 				if (err) {
@@ -631,8 +626,6 @@ app.post("/unSub", async function (req, res) {
 
 app.get("/notifications", async function (req, res) {
 	let connection;
-	var mypw = "dbsw20";
-	var pwd = null;
 
 	try {
 		connection = await oracledb.getConnection({
@@ -681,7 +674,6 @@ app.post("/delNote", async function (req, res) {
 	console.log("Body: ", req.body);
 
 	let connection;
-	var mypw = "dbsw20";
 
 	try {
 		connection = await oracledb.getConnection({

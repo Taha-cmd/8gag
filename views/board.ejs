@@ -9,25 +9,32 @@
 
 <body>
     <header>
-		<%- include('partials/header'); %>
+        <%- include('partials/header'); %>
     </header>
-	
-	<main>
+
+    <main>
         <div class="profile">
             <%= data.username %>
                 <img class="profile_pic" src="<%=data.profile_pic %>" alt="">
         </div>
-		
-		<div class="center">
-			<h1> <%=data.boardName%> </h1>
-		</div>
-		
-		<div class="centerLeft">
-		<% for(var i = 0; i < data.board.rows.length; i++) {%>
-				<h6><li><%= data.board.rows[i]["username"] %>:</li></h6>
-				<p>"<%= data.board.rows[i]["content"] %>"</p>
-		<% } %>
-		</div>
+
+        <div class="center">
+            <h1>
+                <%=data.boardName%>
+            </h1>
+        </div>
+
+        <div class="centerLeft">
+            <% if(data.board.rows.length> 0) { %>
+                <% for(var i=0; i < data.board.rows.length; i++) {%>
+                    <h6>
+                        <li>
+                            <%= data.board.rows[i]["username"] %>:
+                        </li>
+                    </h6>
+                    <p>"<%= data.board.rows[i]["content"] %>"</p>
+                    <% } }%>
+        </div>
 
         <% if (data.loggedIn) { %>
             <%- include('partials/uploadBoardPost'); %>
