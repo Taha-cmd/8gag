@@ -75,14 +75,12 @@ app.get("/browse", (req, res) =>
 
 app.get("/boards", async function (req, res) {
 	let connection;
-	var mypw = "dbsw20";
-	var pwd = null;
 	
 	try{
 		await oracledb.getConnection({
-			user          : "w20bif3_if20b185",
-			password      : mypw,
-			connectString : "infdb.technikum-wien.at:1521/o10"
+			user: config.database.user,
+			password: config.database.password,
+			connectString: config.database.connectString,
 		}, async function(err, connection){
 		
 		console.log('Con: ', connection);
@@ -121,14 +119,12 @@ app.get("/board", async function (req, res) {
 	console.log("Request: ", queryObject["boardName"]);
 	
 	let connection;
-	var mypw = "dbsw20";
-	var pwd = null;
 	
 	try{
 		connection = await oracledb.getConnection( {
-			user          : "w20bif3_if20b185",
-			password      : mypw,
-			connectString : "infdb.technikum-wien.at:1521/o10"
+			user: config.database.user,
+			password: config.database.password,
+			connectString: config.database.connectString,
 		});
 
 		await connection.execute("select * from" + 
@@ -247,15 +243,14 @@ app.get("/register", (req, res) => {
 
 app.post('/login', async function (req, res) {
 	let connection;
-	var mypw = "dbsw20";
 	var pwd = null;
 	var res_user;
 	
 	try{
 		connection = await oracledb.getConnection( {
-			user          : "w20bif3_if20b185",
-			password      : mypw,
-			connectString : "infdb.technikum-wien.at:1521/o10"
+			user: config.database.user,
+			password: config.database.password,
+			connectString: config.database.connectString,
 		});
 
 		await connection.execute("select \"id\", \"password_hash\" from \"user\" where \"username\" = :un", [req.body.username], function(err, result){
@@ -288,9 +283,9 @@ app.post('/login', async function (req, res) {
 		});
 		
 		connection2 = await oracledb.getConnection( {
-			user          : "w20bif3_if20b185",
-			password      : mypw,
-			connectString : "infdb.technikum-wien.at:1521/o10"
+			user: config.database.user,
+			password: config.database.password,
+			connectString: config.database.connectString,
 		});
 		
 		
@@ -327,13 +322,12 @@ app.post('/login', async function (req, res) {
 
 app.post("/register", async function (req, res) {
 	var connection;
-	var mypw = "dbsw20";
 	
 	try{
 		connection = await oracledb.getConnection({
-			user          : "w20bif3_if20b185",
-			password      : mypw,
-			connectString : "infdb.technikum-wien.at:1521/o10"
+			user: config.database.user,
+			password: config.database.password,
+			connectString: config.database.connectString,
 		});
 			
 		res.set('Content-Type', 'text/html');
@@ -445,12 +439,14 @@ app.post("/uploadBoardPost", async function (req, res) {
 	
 	try{
 		connection = await oracledb.getConnection( {
-			user          : "w20bif3_if20b185",
-			password      : mypw,
-			connectString : "infdb.technikum-wien.at:1521/o10"
+			user: config.database.user,
+			password: config.database.password,
+			connectString: config.database.connectString,
 		});
 	
 		var st = "insert into \"board_post\" (\"content\", \"user_id\", \"board_id\") values ('" + req.body.post_content + "', " + sess.uid + ", " + req.body.board_id + ")";
+		
+		console.log("ST: ", st);
 		
 		await connection.execute(st,
 								[], {autoCommit: true}, 
@@ -482,13 +478,12 @@ app.post("/sub", async function (req, res) {
 	console.log("Body: ", req.body);
 
 	let connection;
-	var mypw = "dbsw20";
 	
 	try{
 		connection = await oracledb.getConnection( {
-			user          : "w20bif3_if20b185",
-			password      : mypw,
-			connectString : "infdb.technikum-wien.at:1521/o10"
+			user: config.database.user,
+			password: config.database.password,
+			connectString: config.database.connectString,
 		});
 	
 		var st = "insert into \"subscription\" (\"user_id\", \"board_id\") values (" + sess.uid + ", " + req.body.board_id + ")";
@@ -526,13 +521,12 @@ app.post("/unSub", async function (req, res) {
 	console.log("Body: ", req.body);
 
 	let connection;
-	var mypw = "dbsw20";
 	
 	try{
 		connection = await oracledb.getConnection( {
-			user          : "w20bif3_if20b185",
-			password      : mypw,
-			connectString : "infdb.technikum-wien.at:1521/o10"
+			user: config.database.user,
+			password: config.database.password,
+			connectString: config.database.connectString,
 		});
 	
 		var st = "delete from \"subscription\" where \"user_id\" = " + sess.uid + " and \"board_id\" = " + req.body.board_id;
@@ -569,14 +563,12 @@ app.post("/unSub", async function (req, res) {
 
 app.get("/notifications", async function (req, res) {
 	let connection;
-	var mypw = "dbsw20";
-	var pwd = null;
 	
 	try{
 		connection = await oracledb.getConnection( {
-			user          : "w20bif3_if20b185",
-			password      : mypw,
-			connectString : "infdb.technikum-wien.at:1521/o10"
+			user: config.database.user,
+			password: config.database.password,
+			connectString: config.database.connectString,
 		});
 
 		await connection.execute("select * from \"notification\" where \"user_id\" = :id", [sess.uid], function(err, result){
@@ -609,13 +601,12 @@ app.post("/delNote", async function (req, res) {
 	console.log("Body: ", req.body);
 
 	let connection;
-	var mypw = "dbsw20";
 	
 	try{
 		connection = await oracledb.getConnection( {
-			user          : "w20bif3_if20b185",
-			password      : mypw,
-			connectString : "infdb.technikum-wien.at:1521/o10"
+			user: config.database.user,
+			password: config.database.password,
+			connectString: config.database.connectString,
 		});
 	
 		var st = `begin deleteNotificationByUserID(:usid); end;`;
