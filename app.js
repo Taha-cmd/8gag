@@ -87,7 +87,7 @@ app.get("/boards", async function (req, res) {
 		
 		console.log('Con: ', connection);
 
-		await connection.execute("select * from \"board\"", [], function(err, result){
+		await connection.execute("select * from \"view_board\"", [], function(err, result){
 			if (err) {
 				console.log('Result: ', err);
 				res.sendStatus(400);

@@ -29,7 +29,7 @@
 			<% for(var i=0; i < data.boards.rows.length; i++) {%>
 				<a href="board?board=<%=data.boards.rows[i]["id"]%>&boardName=<%=data.boards.rows[i]["name"]%>"><h2>
 							<li>
-								<%= data.boards.rows[i]["name"] %>
+								<%= data.boards.rows[i]["name"] %> (<%= data.boards.rows[i]["CNAME"] %>)
 							</li>
 						</h2></a>
 				<%if (data.loggedIn) {%>
