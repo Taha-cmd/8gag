@@ -153,7 +153,7 @@ app.get("/", async (req, res) => {
 			`select * from "post" join "user" on "post"."user_id" = "user"."id"
 			join "post_tag" on "post"."id" = "post_tag"."post_id" join "tag" on "tag"."id" = "post_tag"."tag_id"
 			left join "post_image" on "post"."id" = "post_image"."post_id" 
-			left join "image" on "image"."id" = "post_image"."image_id"`,
+			left join "image" on "image"."id" = "post_image"."image_id" order by "post"."id" DESC`,
 			(err, result) => {
 				if (err) {
 					connection.close();
