@@ -45,6 +45,7 @@ const menuLoggedIn = [
 	{ name: "browse", href: "/browse" },
 	{ name: "boards", href: "/boards" },
 	{ name: "notifications", href: "/notifications" },
+	{ name: "logout", href: "/logout" },
 ];
 
 const config = JSON.parse(readFileSync("config.json"));
@@ -231,6 +232,12 @@ app.get("/browse", (req, res) => {
 app.get("/login", (req, res) => {
 	const menu = loggedIn ? menuLoggedIn : menuNotLoggedIn;
 	res.render("login", { data: { menu: menu } });
+});
+
+app.get("/logout", async function (req, res) {
+	sess = null;
+	loggedIn = false;
+	res.redirect('http://127.0.0.1:8080/');
 });
 
 app.get("/register", (req, res) => {
