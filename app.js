@@ -42,7 +42,6 @@ const menuNotLoggedIn = [
 const menuLoggedIn = [
 	{ name: "homepage", href: "/" },
 	{ name: "profile", href: "/profile" },
-	{ name: "browse", href: "/browse" },
 	{ name: "boards", href: "/boards" },
 	{ name: "notifications", href: "/notifications" },
 	{ name: "logout", href: "/logout" },
@@ -51,27 +50,6 @@ const menuLoggedIn = [
 const config = JSON.parse(readFileSync("config.json"));
 var sess;
 var loggedIn = false;
-
-/*app.get("/", (req, res) =>
-	!loggedIn
-		? res.render("index", { data: { menu: menu } })
-		: res.render("homepage", {
-				data: {
-					username: sess.username,
-					profile_pic: "images/cat.png",
-					menu: menuLoggedIn,
-					loggedIn: loggedIn,
-				},
-		  })
-); */
-
-app.get("/browse", (req, res) =>
-	!loggedIn
-		? res.render("homepage", {
-				data: { loggedIn: false, menu: menuNotLoggedIn },
-		  })
-		: res.render("homepage", { data: { loggedIn: true, menu: menuLoggedIn } })
-);
 
 app.get("/boards", async function (req, res) {
 	let connection;
