@@ -41,7 +41,6 @@ const menuNotLoggedIn = [
 
 const menuLoggedIn = [
 	{ name: "homepage", href: "/" },
-	{ name: "profile", href: "/profile" },
 	{ name: "boards", href: "/boards" },
 	{ name: "notifications", href: "/notifications" },
 	{ name: "logout", href: "/logout" },
